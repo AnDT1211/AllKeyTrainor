@@ -51,6 +51,9 @@ createApp({
         
         document.addEventListener('touchstart', resumeAudio, { once: true });
         document.addEventListener('mousedown', resumeAudio, { once: true });
+        
+        // Register Service Worker for PWA
+        this.registerServiceWorker();
     },
 
 
@@ -223,6 +226,20 @@ createApp({
 
             const n = notes[pitch] + (octave - 4) * 12;
             return A4 * Math.pow(2, n / 12);
+        },
+
+        registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./service-worker.js')
+                        .then((registration) => {
+                            console.log('ServiceWorker registered:', registration.scope);
+                        })
+                        .catch((error) => {
+                            console.log('ServiceWorker registration failed:', error);
+                        });
+                });
+            }
         }
     }
 }).mount('#app');
