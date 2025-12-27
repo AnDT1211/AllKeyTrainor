@@ -43,3 +43,24 @@ body {
     font-size: 12px;
     margin-bottom: 5px;
 }
+
+.exercise {
+  margin-bottom: 15px;
+}
+
+.ex-note {
+  padding: 6px 10px;
+  margin-right: 6px;
+  border-radius: 4px;
+  background: #eee;
+}
+
+.ex-note.correct {
+  background: #4caf50;
+  color: white;
+}
+
+.ex-note.wrong {
+  background: #f44336;
+  color: white;
+}

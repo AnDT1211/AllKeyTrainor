@@ -1,11 +1,29 @@
 const { createApp } = Vue;
 
+const DEGREE_OFFSET = {
+  do: 0,
+  re: 2,
+  mi: 4,
+  fa: 5,
+  sol: 7,
+  la: 9,
+  si: 11
+};
+
+const CHROMATIC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+
 createApp({
     data() {
         return {
             audioCtx: null,
             pianoBuffer: null,
-            keys: []
+            keys: [],
+
+            currentKey: null,        // tone chính, ví dụ "G"
+            exerciseNotes: [],       // danh sách note mục tiêu [{label, note}]
+            currentIndex: 0,         // user đang ở note thứ mấy
+            finished: false          // đã kết thúc bài chưa
         };
     },
 
@@ -13,10 +31,40 @@ createApp({
         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         this.generateKeys();
         this.loadPianoSample();
+
+        this.createExercise();
     },
     
 
     methods: {
+
+        createExercise() {
+            const degrees = ['do','re','mi','fa','sol','la','si'];
+
+            // random tone
+            // this.currentKey = CHROMATIC[Math.floor(Math.random() * CHROMATIC.length)];   // TODO
+            this.currentKey = 'C';
+
+            // random 5–6 degree
+            const count = 5 + Math.floor(Math.random() * 2);
+            const shuffled = degrees.sort(() => Math.random() - 0.5).slice(0, count);
+
+            const keyIndex = CHROMATIC.indexOf(this.currentKey);
+
+            this.exerciseNotes = shuffled.map(d => {
+                const noteIndex = (keyIndex + DEGREE_OFFSET[d]) % 12;
+                return {
+                label: d,
+                note: CHROMATIC[noteIndex],
+                status: 'pending'
+                };
+            });
+
+            this.currentIndex = 0;
+            this.finished = false;
+        },
+
+
         async loadPianoSample() {
             const res = await fetch('https://cdn.jsdelivr.net/gh/gleitz/midi-js-soundfonts@master/MusyngKite/acoustic_grand_piano-mp3/C4.mp3');
             const arrayBuffer = await res.arrayBuffer();
@@ -41,7 +89,7 @@ createApp({
 
             let whiteIndex = 0;
 
-            for (let octave = 3; octave <= 5; octave++) {
+            for (let octave = 3; octave <= 4; octave++) {
                 for (const n of notes) {
                     const noteName = n.name + octave;
                     const freq = this.noteToFrequency(noteName);
@@ -66,16 +114,32 @@ createApp({
         },
 
         play(key) {
-            if (!this.pianoBuffer) return;
+            if (!this.pianoBuffer || this.finished) return;
 
-            console.log(key.note);
+            const pressedNote = key.note.replace(/[0-9]/g, '');
+            console.log(pressedNote);
 
+            // xử lý bài tập
+            const target = this.exerciseNotes[this.currentIndex];
+            if (!target) return;
+
+            if (pressedNote === target.note) {
+                target.status = 'correct';
+                this.currentIndex++;
+
+                if (this.currentIndex >= this.exerciseNotes.length) {
+                    this.finished = true;
+                }
+            } else {
+                target.status = 'wrong';
+                this.finished = true;
+            }
+
+            // phần audio giữ nguyên
             const src = this.audioCtx.createBufferSource();
             const gain = this.audioCtx.createGain();
 
             src.buffer = this.pianoBuffer;
-
-            // C4 là sample gốc → tính tỉ lệ
             const baseFreq = this.noteToFrequency('C4');
             src.playbackRate.value = key.freq / baseFreq;
 
@@ -84,7 +148,6 @@ createApp({
 
             src.connect(gain);
             gain.connect(this.audioCtx.destination);
-
             src.start();
         },
 

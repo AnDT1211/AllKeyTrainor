@@ -11,11 +11,24 @@
 
     <div id="app">
         <h2>Piano 3 Quãng 8 (C3 → B5)</h2>
+        <h3>Tone: {{ currentKey }}</h3>
+
+        <div class="exercise">
+        <span
+            v-for="n in exerciseNotes"
+            :class="['ex-note', n.status]"
+        >
+            {{ n.label }}
+        </span>
+        </div>
+
+        <button @click="createExercise">Refresh</button>
+        <button @click="createExercise">Next</button>
         <div class="piano">
             <template v-for="key in keys">
                 <!-- White key -->
                 <div v-if="!key.isBlack" class="white-key" @click="play(key)">
-                    <div class="label">{{ key.note }}</div>
+                    <!-- <div class="label">{{ key.note }}</div> -->
                 </div>
 
                 <!-- Black key -->
