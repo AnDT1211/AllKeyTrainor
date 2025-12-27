@@ -61,6 +61,8 @@ body {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     transition: background-color 0.05s ease;
+
+    border-radius: 0 0 8px 8px;
 }
 
 .white-key:active,
@@ -79,6 +81,8 @@ body {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     transition: background-color 0.05s ease;
+
+    border-radius: 0 0 8px 8px;
 }
 
 .black-key:active,

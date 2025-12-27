@@ -1,4 +1,4 @@
-const CACHE_NAME = 'allkeytrainor-v3';
+const CACHE_NAME = 'allkeytrainor-v1';
 
 const urlsToCache = [
   './',
