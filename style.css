@@ -19,7 +19,7 @@ body {
 }
 
 .white-key {
-    width: 60px;
+    width: 55px;
     height: 220px;
     border: 1px solid #333;
     background: white;
@@ -39,7 +39,7 @@ body {
 }
 
 .black-key {
-    width: 35px;
+    width: 33px;
     height: 130px;
     background: black;
     position: absolute;

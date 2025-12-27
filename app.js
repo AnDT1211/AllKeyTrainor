@@ -135,7 +135,7 @@ createApp({
                             note: noteName,
                             freq,
                             isBlack: true,
-                            left: whiteIndex * 60 - 17,
+                            left: whiteIndex * 55 - 17,
                             isPressed: false
                         });
                     }

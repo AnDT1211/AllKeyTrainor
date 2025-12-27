@@ -1,4 +1,5 @@
-const CACHE_NAME = 'allkeytrainor-v2';
+const CACHE_NAME = 'allkeytrainor-v4';
+// const CACHE_NAME = `allkeytrainor-v${Date.now()}`;
 const urlsToCache = [
   './',
   './index.html',
