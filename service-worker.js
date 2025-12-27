@@ -1,19 +1,11 @@
-const CACHE_NAME = 'allkeytrainor-v2';
-
-// Get base path from service worker location
-const getBasePath = () => {
-  const path = self.location.pathname;
-  const lastSlash = path.lastIndexOf('/');
-  return path.substring(0, lastSlash + 1);
-};
-
-const BASE_PATH = getBasePath();
+const CACHE_NAME = 'allkeytrainor-v3';
 
 const urlsToCache = [
-  BASE_PATH,
-  BASE_PATH + 'index.html',
-  BASE_PATH + 'style.css',
-  BASE_PATH + 'app.js',
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './manifest.json',
   'https://unpkg.com/vue@3/dist/vue.global.js'
 ];
 
@@ -78,7 +70,7 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         // If both cache and network fail, return offline page if available
         if (event.request.destination === 'document') {
-          return caches.match(BASE_PATH + 'index.html');
+          return caches.match('./index.html');
         }
       })
   );

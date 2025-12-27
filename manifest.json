@@ -2,21 +2,21 @@
   "name": "AllKeyTrainor - Piano Trainer",
   "short_name": "AllKeyTrainor",
   "description": "Ứng dụng luyện tập đàn piano với các bài tập ngẫu nhiên",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/AllKeyTrainor/",
+  "scope": "/AllKeyTrainor/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4a90e2",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./piano_icon.png",
+      "src": "/AllKeyTrainor/piano_icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./piano_icon.png",
+      "src": "/AllKeyTrainor/piano_icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
