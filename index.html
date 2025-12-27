@@ -7,23 +7,39 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div id="app">
-        <h2>Piano 3 Quãng 8 (C3 → B5)</h2>
-        <h3>Tone: {{ currentKey }}</h3>
+        <div class="top-bar">
+            <div class="tone-select">
+                <label for="tone">Tone</label>
+                <select v-model="currentKey" @change="createNewExercise">
+                    <option v-for="t in tones" :key="t" :value="t">
+                        {{ t }}
+                    </option>
+                </select>
+            </div>
+            <div class="note-count">
+                <span><label for="noteNum">Số note</label></span>
 
-        <div class="exercise">
-        <span
-            v-for="n in exerciseNotes"
-            :class="['ex-note', n.status]"
-        >
-            {{ n.label }}
-        </span>
+                <button @click="changeNoteCount(-1)" :disabled="noteCount <= 2">−</button>
+                <span class="count">{{ noteCount }}</span>
+                <button @click="changeNoteCount(1)" :disabled="noteCount >= 10">+</button>
+            </div>
         </div>
 
-        <button @click="createExercise">Refresh</button>
-        <button @click="createExercise">Next</button>
+        <div class="exercise">
+            <span v-for="n in exerciseNotes" :class="['ex-note', n.status]">
+                {{ n.label }}
+            </span>
+        </div>
+
+
+        <div class="controls">
+            <button class="btn btn-secondary" @click="resetExercise">Refresh</button>
+            <button class="btn btn-primary" @click="createNewExercise">Next</button>
+        </div>
         <div class="piano">
             <template v-for="key in keys">
                 <!-- White key -->
@@ -39,4 +55,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>

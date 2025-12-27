@@ -1,16 +1,16 @@
 const { createApp } = Vue;
 
 const DEGREE_OFFSET = {
-  do: 0,
-  re: 2,
-  mi: 4,
-  fa: 5,
-  sol: 7,
-  la: 9,
-  si: 11
+    do: 0,
+    re: 2,
+    mi: 4,
+    fa: 5,
+    sol: 7,
+    la: 9,
+    si: 11
 };
 
-const CHROMATIC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const CHROMATIC = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 
 createApp({
@@ -20,43 +20,50 @@ createApp({
             pianoBuffer: null,
             keys: [],
 
-            currentKey: null,        // tone chính, ví dụ "G"
-            exerciseNotes: [],       // danh sách note mục tiêu [{label, note}]
-            currentIndex: 0,         // user đang ở note thứ mấy
-            finished: false          // đã kết thúc bài chưa
+            tones: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
+            currentKey: 'C',
+
+            noteCount: 5,
+
+            exerciseNotes: [],
+            currentIndex: 0,
+            finished: false
         };
     },
+
 
     mounted() {
         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         this.generateKeys();
         this.loadPianoSample();
 
-        this.createExercise();
+        this.createNewExercise();
     },
-    
+
 
     methods: {
 
-        createExercise() {
-            const degrees = ['do','re','mi','fa','sol','la','si'];
+        changeNoteCount(delta) {
+            const next = this.noteCount + delta;
 
-            // random tone
-            // this.currentKey = CHROMATIC[Math.floor(Math.random() * CHROMATIC.length)];   // TODO
-            this.currentKey = 'C';
+            if (next < 2 || next > 10) return;
 
-            // random 5–6 degree
-            const count = 5 + Math.floor(Math.random() * 2);
-            const shuffled = degrees.sort(() => Math.random() - 0.5).slice(0, count);
+            this.noteCount = next;
+            this.createNewExercise();
+        },
 
+        createNewExercise() {
+            const degrees = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
             const keyIndex = CHROMATIC.indexOf(this.currentKey);
 
-            this.exerciseNotes = shuffled.map(d => {
+            this.exerciseNotes = Array.from({ length: this.noteCount }, () => {
+                const d = degrees[Math.floor(Math.random() * degrees.length)];
                 const noteIndex = (keyIndex + DEGREE_OFFSET[d]) % 12;
+
                 return {
-                label: d,
-                note: CHROMATIC[noteIndex],
-                status: 'pending'
+                    label: d,
+                    note: CHROMATIC[noteIndex],
+                    status: 'pending'
                 };
             });
 
@@ -64,6 +71,59 @@ createApp({
             this.finished = false;
         },
 
+
+        // createNewExercise() {
+        //     const degrees = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
+
+        //     const shuffled = degrees
+        //         .slice()
+        //         .sort(() => Math.random() - 0.5)
+        //         .slice(0, this.noteCount);
+
+        //     const keyIndex = CHROMATIC.indexOf(this.currentKey);
+
+        //     this.exerciseNotes = shuffled.map(d => {
+        //         const noteIndex = (keyIndex + DEGREE_OFFSET[d]) % 12;
+        //         return {
+        //             label: d,
+        //             note: CHROMATIC[noteIndex],
+        //             status: 'pending'
+        //         };
+        //     });
+
+        //     this.currentIndex = 0;
+        //     this.finished = false;
+        // },
+        // createNewExercise() {
+        //     const degrees = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
+
+        //     // const count = 5 + Math.floor(Math.random() * 2);
+        //     const count = this.noteCount;
+        //     const shuffled = degrees
+        //         .slice()
+        //         .sort(() => Math.random() - 0.5)
+        //         .slice(0, count);
+
+        //     const keyIndex = CHROMATIC.indexOf(this.currentKey);
+
+        //     this.exerciseNotes = shuffled.map(d => {
+        //         const noteIndex = (keyIndex + DEGREE_OFFSET[d]) % 12;
+        //         return {
+        //             label: d,
+        //             note: CHROMATIC[noteIndex],
+        //             status: 'pending'
+        //         };
+        //     });
+
+        //     this.currentIndex = 0;
+        //     this.finished = false;
+        // },
+
+        resetExercise() {
+            this.exerciseNotes.forEach(n => n.status = 'pending');
+            this.currentIndex = 0;
+            this.finished = false;
+        },
 
         async loadPianoSample() {
             const res = await fetch('https://cdn.jsdelivr.net/gh/gleitz/midi-js-soundfonts@master/MusyngKite/acoustic_grand_piano-mp3/C4.mp3');
@@ -106,7 +166,7 @@ createApp({
                             note: noteName,
                             freq,
                             isBlack: true,
-                            left: whiteIndex * 50 - 15
+                            left: whiteIndex * 60 - 17
                         });
                     }
                 }
