@@ -39,7 +39,7 @@ createApp({
         this.loadPianoSample();
 
         this.createNewExercise();
-        
+
         // Resume AudioContext on first user interaction (required for iOS)
         const resumeAudio = () => {
             if (this.audioCtx.state === 'suspended') {
@@ -48,10 +48,10 @@ createApp({
                 });
             }
         };
-        
+
         document.addEventListener('touchstart', resumeAudio, { once: true });
         document.addEventListener('mousedown', resumeAudio, { once: true });
-        
+
         // Register Service Worker for PWA
         this.registerServiceWorker();
     },
@@ -191,6 +191,8 @@ createApp({
 
                 if (this.currentIndex >= this.exerciseNotes.length) {
                     this.finished = true;
+                    // auto next ex
+                    setTimeout(() => { this.createNewExercise(); }, 800);
                 }
             } else {
                 target.status = 'wrong';
