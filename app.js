@@ -71,54 +71,6 @@ createApp({
             this.finished = false;
         },
 
-
-        // createNewExercise() {
-        //     const degrees = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
-
-        //     const shuffled = degrees
-        //         .slice()
-        //         .sort(() => Math.random() - 0.5)
-        //         .slice(0, this.noteCount);
-
-        //     const keyIndex = CHROMATIC.indexOf(this.currentKey);
-
-        //     this.exerciseNotes = shuffled.map(d => {
-        //         const noteIndex = (keyIndex + DEGREE_OFFSET[d]) % 12;
-        //         return {
-        //             label: d,
-        //             note: CHROMATIC[noteIndex],
-        //             status: 'pending'
-        //         };
-        //     });
-
-        //     this.currentIndex = 0;
-        //     this.finished = false;
-        // },
-        // createNewExercise() {
-        //     const degrees = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
-
-        //     // const count = 5 + Math.floor(Math.random() * 2);
-        //     const count = this.noteCount;
-        //     const shuffled = degrees
-        //         .slice()
-        //         .sort(() => Math.random() - 0.5)
-        //         .slice(0, count);
-
-        //     const keyIndex = CHROMATIC.indexOf(this.currentKey);
-
-        //     this.exerciseNotes = shuffled.map(d => {
-        //         const noteIndex = (keyIndex + DEGREE_OFFSET[d]) % 12;
-        //         return {
-        //             label: d,
-        //             note: CHROMATIC[noteIndex],
-        //             status: 'pending'
-        //         };
-        //     });
-
-        //     this.currentIndex = 0;
-        //     this.finished = false;
-        // },
-
         resetExercise() {
             this.exerciseNotes.forEach(n => n.status = 'pending');
             this.currentIndex = 0;
