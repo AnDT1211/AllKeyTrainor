@@ -47,30 +47,47 @@
             </div>
         </div>
 
-        <div class="exercise">
-            <span v-for="n in exerciseNotes" :class="['ex-note', n.status]">
-                {{ n.label }}
-            </span>
+        <div class="exercise-container">
+            <button class="piano-nav-btn piano-nav-left" 
+                    @click="scrollPianoLeft" 
+                    :disabled="!canScrollLeft"
+                    aria-label="Scroll left">
+                ‹
+            </button>
+            <div class="exercise">
+                <span v-for="n in exerciseNotes" :class="['ex-note', n.status]">
+                    {{ n.label }}
+                </span>
+            </div>
+            <button class="piano-nav-btn piano-nav-right" 
+                    @click="scrollPianoRight" 
+                    :disabled="!canScrollRight"
+                    aria-label="Scroll right">
+                ›
+            </button>
         </div>
 
+        <div class="piano-container">
+            <div class="piano-wrapper" ref="pianoWrapper" @scroll="checkScrollPosition">
+                <div class="piano">
+                <template v-for="key in keys">
+                    <!-- White key -->
+                    <div v-if="!key.isBlack" class="white-key" :class="{ 'key-pressed': key.isPressed }"
+                        @touchstart.prevent="handleTouchStart(key, $event)" @touchend.prevent="handleTouchEnd(key, $event)"
+                        @touchcancel.prevent="handleTouchEnd(key, $event)" @mousedown.prevent="handleMouseDown(key, $event)"
+                        @mouseup.prevent="handleMouseUp(key, $event)" @mouseleave="handleTouchEnd(key, $event)">
+                        <!-- <div class="label">{{ key.note }}</div> -->
+                    </div>
 
-        <div class="piano">
-            <template v-for="key in keys">
-                <!-- White key -->
-                <div v-if="!key.isBlack" class="white-key" :class="{ 'key-pressed': key.isPressed }"
-                    @touchstart.prevent="handleTouchStart(key, $event)" @touchend.prevent="handleTouchEnd(key, $event)"
-                    @touchcancel.prevent="handleTouchEnd(key, $event)" @mousedown.prevent="handleMouseDown(key, $event)"
-                    @mouseup.prevent="handleMouseUp(key, $event)" @mouseleave="handleTouchEnd(key, $event)">
-                    <!-- <div class="label">{{ key.note }}</div> -->
+                    <!-- Black key -->
+                    <div v-else class="black-key" :class="{ 'key-pressed': key.isPressed }"
+                        :style="{ left: key.left + 'px' }" @touchstart.prevent="handleTouchStart(key, $event)"
+                        @touchend.prevent="handleTouchEnd(key, $event)" @touchcancel.prevent="handleTouchEnd(key, $event)"
+                        @mousedown.prevent="handleMouseDown(key, $event)" @mouseup.prevent="handleMouseUp(key, $event)"
+                        @mouseleave="handleTouchEnd(key, $event)"></div>
+                </template>
                 </div>
-
-                <!-- Black key -->
-                <div v-else class="black-key" :class="{ 'key-pressed': key.isPressed }"
-                    :style="{ left: key.left + 'px' }" @touchstart.prevent="handleTouchStart(key, $event)"
-                    @touchend.prevent="handleTouchEnd(key, $event)" @touchcancel.prevent="handleTouchEnd(key, $event)"
-                    @mousedown.prevent="handleMouseDown(key, $event)" @mouseup.prevent="handleMouseUp(key, $event)"
-                    @mouseleave="handleTouchEnd(key, $event)"></div>
-            </template>
+            </div>
         </div>
     </div>
 

@@ -28,7 +28,9 @@ createApp({
 
             exerciseNotes: [],
             currentIndex: 0,
-            finished: false
+            finished: false,
+            canScrollLeft: false,
+            canScrollRight: true
         };
     },
 
@@ -51,9 +53,14 @@ createApp({
 
         document.addEventListener('touchstart', resumeAudio, { once: true });
         document.addEventListener('mousedown', resumeAudio, { once: true });
-
+        
         // Register Service Worker for PWA
         this.registerServiceWorker();
+        
+        // Check scroll position after mount
+        this.$nextTick(() => {
+            this.checkScrollPosition();
+        });
     },
 
 
@@ -117,7 +124,7 @@ createApp({
 
             let whiteIndex = 0;
 
-            for (let octave = 3; octave <= 4; octave++) {
+            for (let octave = 3; octave <= 5; octave++) {
                 for (const n of notes) {
                     const noteName = n.name + octave;
                     const freq = this.noteToFrequency(noteName);
@@ -167,6 +174,33 @@ createApp({
         handleMouseUp(key, event) {
             event.preventDefault();
             key.isPressed = false;
+        },
+
+        scrollPianoLeft() {
+            const wrapper = this.$refs.pianoWrapper;
+            if (wrapper && this.canScrollLeft) {
+                wrapper.scrollBy({ left: -100, behavior: 'smooth' });
+                // Check position after scroll animation
+                setTimeout(() => this.checkScrollPosition(), 300);
+            }
+        },
+
+        scrollPianoRight() {
+            const wrapper = this.$refs.pianoWrapper;
+            if (wrapper && this.canScrollRight) {
+                wrapper.scrollBy({ left: 100, behavior: 'smooth' });
+                // Check position after scroll animation
+                setTimeout(() => this.checkScrollPosition(), 300);
+            }
+        },
+
+        checkScrollPosition() {
+            const wrapper = this.$refs.pianoWrapper;
+            if (!wrapper) return;
+            
+            const { scrollLeft, scrollWidth, clientWidth } = wrapper;
+            this.canScrollLeft = scrollLeft > 1; // > 1 to account for rounding
+            this.canScrollRight = scrollLeft < scrollWidth - clientWidth - 1; // -1 for rounding errors
         },
 
         async playKey(key) {
