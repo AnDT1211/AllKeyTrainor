@@ -43,12 +43,29 @@
         <div class="piano">
             <template v-for="key in keys">
                 <!-- White key -->
-                <div v-if="!key.isBlack" class="white-key" @click="play(key)">
+                <div v-if="!key.isBlack" 
+                     class="white-key" 
+                     :class="{ 'key-pressed': key.isPressed }"
+                     @touchstart.prevent="handleTouchStart(key, $event)"
+                     @touchend.prevent="handleTouchEnd(key, $event)"
+                     @touchcancel.prevent="handleTouchEnd(key, $event)"
+                     @mousedown.prevent="handleMouseDown(key, $event)"
+                     @mouseup.prevent="handleMouseUp(key, $event)"
+                     @mouseleave="handleTouchEnd(key, $event)">
                     <!-- <div class="label">{{ key.note }}</div> -->
                 </div>
 
                 <!-- Black key -->
-                <div v-else class="black-key" :style="{ left: key.left + 'px' }" @click="play(key)"></div>
+                <div v-else 
+                     class="black-key" 
+                     :class="{ 'key-pressed': key.isPressed }"
+                     :style="{ left: key.left + 'px' }"
+                     @touchstart.prevent="handleTouchStart(key, $event)"
+                     @touchend.prevent="handleTouchEnd(key, $event)"
+                     @touchcancel.prevent="handleTouchEnd(key, $event)"
+                     @mousedown.prevent="handleMouseDown(key, $event)"
+                     @mouseup.prevent="handleMouseUp(key, $event)"
+                     @mouseleave="handleTouchEnd(key, $event)"></div>
             </template>
         </div>
     </div>

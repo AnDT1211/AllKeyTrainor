@@ -14,6 +14,8 @@ body {
     display: flex;
     position: relative;
     user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .white-key {
@@ -26,9 +28,13 @@ body {
     align-items: flex-end;
     justify-content: center;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background-color 0.05s ease;
 }
 
-.white-key:active {
+.white-key:active,
+.white-key.key-pressed {
     background: #ddd;
 }
 
@@ -40,9 +46,13 @@ body {
     margin-left: 0px;
     z-index: 2;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background-color 0.05s ease;
 }
 
-.black-key:active {
+.black-key:active,
+.black-key.key-pressed {
     background: #444;
 }
 

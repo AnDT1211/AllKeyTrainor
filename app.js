@@ -19,6 +19,7 @@ createApp({
             audioCtx: null,
             pianoBuffer: null,
             keys: [],
+            audioContextResumed: false,
 
             tones: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
             currentKey: 'C',
@@ -38,6 +39,18 @@ createApp({
         this.loadPianoSample();
 
         this.createNewExercise();
+        
+        // Resume AudioContext on first user interaction (required for iOS)
+        const resumeAudio = () => {
+            if (this.audioCtx.state === 'suspended') {
+                this.audioCtx.resume().then(() => {
+                    this.audioContextResumed = true;
+                });
+            }
+        };
+        
+        document.addEventListener('touchstart', resumeAudio, { once: true });
+        document.addEventListener('mousedown', resumeAudio, { once: true });
     },
 
 
@@ -110,7 +123,8 @@ createApp({
                         this.keys.push({
                             note: noteName,
                             freq,
-                            isBlack: false
+                            isBlack: false,
+                            isPressed: false
                         });
                         whiteIndex++;
                     } else {
@@ -118,15 +132,48 @@ createApp({
                             note: noteName,
                             freq,
                             isBlack: true,
-                            left: whiteIndex * 60 - 17
+                            left: whiteIndex * 60 - 17,
+                            isPressed: false
                         });
                     }
                 }
             }
         },
 
-        play(key) {
+        async ensureAudioContext() {
+            if (this.audioCtx.state === 'suspended') {
+                await this.audioCtx.resume();
+            }
+        },
+
+        handleTouchStart(key, event) {
+            event.preventDefault();
+            this.playKey(key);
+        },
+
+        handleTouchEnd(key, event) {
+            event.preventDefault();
+            key.isPressed = false;
+        },
+
+        handleMouseDown(key, event) {
+            event.preventDefault();
+            this.playKey(key);
+        },
+
+        handleMouseUp(key, event) {
+            event.preventDefault();
+            key.isPressed = false;
+        },
+
+        async playKey(key) {
             if (!this.pianoBuffer || this.finished) return;
+
+            // Cập nhật visual feedback ngay lập tức
+            key.isPressed = true;
+
+            // Đảm bảo AudioContext được resume (quan trọng cho iOS)
+            await this.ensureAudioContext();
 
             const pressedNote = key.note.replace(/[0-9]/g, '');
             console.log(pressedNote);
