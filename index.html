@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Vue Piano 3 Octaves</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app">
+        <h2>Piano 3 Quãng 8 (C3 → B5)</h2>
+        <div class="piano">
+            <template v-for="key in keys">
+                <!-- White key -->
+                <div v-if="!key.isBlack" class="white-key" @click="play(key)">
+                    <div class="label">{{ key.note }}</div>
+                </div>
+
+                <!-- Black key -->
+                <div v-else class="black-key" :style="{ left: key.left + 'px' }" @click="play(key)"></div>
+            </template>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

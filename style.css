@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.piano {
+    display: flex;
+    position: relative;
+    user-select: none;
+}
+
+.white-key {
+    width: 50px;
+    height: 200px;
+    border: 1px solid #333;
+    background: white;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.white-key:active {
+    background: #ddd;
+}
+
+.black-key {
+    width: 30px;
+    height: 120px;
+    background: black;
+    position: absolute;
+    margin-left: 0px;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.black-key:active {
+    background: #444;
+}
+
+.label {
+    font-size: 12px;
+    margin-bottom: 5px;
+}
