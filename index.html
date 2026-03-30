@@ -37,7 +37,7 @@
             <div class="note-count">
                 <span><label for="noteNum">Số note</label></span>
 
-                <button @click="changeNoteCount(-1)" :disabled="noteCount <= 2">−</button>
+                <button @click="changeNoteCount(-1)" :disabled="noteCount <= 1">−</button>
                 <span class="count">{{ noteCount }}</span>
                 <button @click="changeNoteCount(1)" :disabled="noteCount >= 10">+</button>
             </div>

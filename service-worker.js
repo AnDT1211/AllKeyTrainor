@@ -1,4 +1,4 @@
-const CACHE_NAME = 'allkeytrainor-v1.0.0';
+const CACHE_NAME = 'allkeytrainor-v1.1.0';
 
 const urlsToCache = [
   './',
@@ -51,19 +51,19 @@ self.addEventListener('fetch', (event) => {
         // Return cached version or fetch from network
         return response || fetch(event.request).then((response) => {
           // Don't cache external resources that might fail
-          if (!event.request.url.startsWith('http://localhost') && 
-              !event.request.url.startsWith(self.location.origin)) {
+          if (!event.request.url.startsWith('http://localhost') &&
+            !event.request.url.startsWith(self.location.origin)) {
             return response;
           }
-          
+
           // Clone the response
           const responseToCache = response.clone();
-          
+
           caches.open(CACHE_NAME)
             .then((cache) => {
               cache.put(event.request, responseToCache);
             });
-          
+
           return response;
         });
       })

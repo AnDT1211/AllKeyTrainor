@@ -54,6 +54,9 @@ createApp({
 
         // Register Service Worker for PWA
         this.registerServiceWorker();
+
+        // Setup MIDI
+        this.setupMIDI();
     },
 
 
@@ -62,7 +65,7 @@ createApp({
         changeNoteCount(delta) {
             const next = this.noteCount + delta;
 
-            if (next < 2 || next > 10) return;
+            if (next < 1 || next > 10) return;
 
             this.noteCount = next;
             this.createNewExercise();
@@ -192,7 +195,7 @@ createApp({
                 if (this.currentIndex >= this.exerciseNotes.length) {
                     this.finished = true;
                     // auto next ex
-                    setTimeout(() => { this.createNewExercise(); }, 800);
+                    setTimeout(() => { this.createNewExercise(); }, 200);
                 }
             } else {
                 target.status = 'wrong';
@@ -241,6 +244,51 @@ createApp({
                             console.log('ServiceWorker registration failed:', error);
                         });
                 });
+            }
+        },
+
+        setupMIDI() {
+            if (navigator.requestMIDIAccess) {
+                navigator.requestMIDIAccess()
+                    .then(midiAccess => {
+                        console.log('MIDI access granted');
+                        for (let input of midiAccess.inputs.values()) {
+                            input.onmidimessage = (message) => this.handleMIDIMessage(message);
+                        }
+
+                        midiAccess.onstatechange = (e) => {
+                            if (e.port.type === 'input' && e.port.state === 'connected') {
+                                e.port.onmidimessage = (message) => this.handleMIDIMessage(message);
+                            }
+                        };
+                    })
+                    .catch(err => {
+                        console.error('MIDI access denied or error:', err);
+                    });
+            } else {
+                console.warn('Web MIDI API not supported in this browser');
+            }
+        },
+
+        handleMIDIMessage(message) {
+            const [status, note, velocity] = message.data;
+            const command = status & 0xF0; // Get the upper nibble (command type)
+            console.log(`MIDI: cmd=${command}, note=${note}, vel=${velocity}`);
+
+            // commands: 144 = note on, 128 = note off
+            // velocity 0 is also treated as note off
+            if (command === 144 && velocity > 0) {
+                // Note ON
+                const keyIndex = note - 48; // MIDI note 48 is C3
+                if (keyIndex >= 0 && keyIndex < this.keys.length) {
+                    this.playKey(this.keys[keyIndex]);
+                }
+            } else if (command === 128 || (command === 144 && velocity === 0)) {
+                // Note OFF
+                const keyIndex = note - 48;
+                if (keyIndex >= 0 && keyIndex < this.keys.length) {
+                    this.keys[keyIndex].isPressed = false;
+                }
             }
         }
     }
